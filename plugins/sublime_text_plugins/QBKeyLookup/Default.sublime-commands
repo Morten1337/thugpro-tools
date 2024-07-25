@@ -1,0 +1,11 @@
+[
+	{
+		"caption": "QB Key Lookup - Formatted",
+		"command": "qbkey_lookup",
+		"args": {"fmt": true},
+	},
+	{
+		"caption": "QB Key Lookup",
+		"command": "qbkey_lookup"
+	}
+]

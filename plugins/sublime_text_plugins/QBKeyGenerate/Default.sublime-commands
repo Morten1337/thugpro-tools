@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "Generate QB Key",
+        "command": "qbkey_generate"
+	}
+]

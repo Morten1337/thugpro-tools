@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+if NOT (${1:<condition>})
+endif
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>ifn</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope>source.q</scope>
+</snippet>

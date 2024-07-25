@@ -1,0 +1,35 @@
+{
+	"cmd": [ "D:/Repos/thugpro/build.bat", "--cache", "--developer", "--scripts" ],
+	"working_dir": "D:/Repos/thugpro",
+	"windows": { "shell": true },
+	"variants": [
+		{
+			"name": "📚 build scripts fast (𝗱𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿)",
+			"cmd": [ "D:/Repos/thugpro/build.bat", "--cache", "--developer", "--scripts" ],
+		},
+		{
+			"name": "🛠 build fast (𝗱𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿)",
+			"cmd": [ "D:/Repos/thugpro/build.bat", "--assets", "--cache", "--developer" ],
+		},
+		{
+			"name": "🛠 build fast",
+			"cmd": [ "D:/Repos/thugpro/build.bat", "--assets", "--cache" ],
+		},
+		{
+			"name": "📦 build full (𝗱𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿)",
+			"cmd": [ "D:/Repos/thugpro/build.bat", "--assets", "--developer" ],
+		},
+		{
+			"name": "📦 build full",
+			"cmd": [ "D:/Repos/thugpro/build.bat", "--assets" ],
+		},
+		{
+			"name": "🚚 generate new update",
+			"cmd": [ "D:/Repos/thugpro/release.bat" ],
+		},
+		{
+			"name": "♻ clear compression cache",
+			"cmd": [ "D:/Repos/thugpro/delete-cache.bat" ],
+		}
+	]
+}

@@ -1,0 +1,295 @@
+%YAML 1.2
+---
+name: Q
+file_extensions: [q]
+scope: source.q
+
+# Know issues:
+# - hash strings in arrays... (see game/menu/stats.q)
+
+
+
+contexts:
+  # 
+  prototype:
+    - include: comments
+    - include: types
+
+  # ---- strings prototype 
+  strings:
+    - match: '"'
+      push:
+      - meta_scope: string.quoted.double
+      # colors
+      - match: '\\c[a-g_0-9]'
+        scope: constant.language
+      # buttons
+      - match: '\\b[a-z_0-9]'
+        scope: constant.language
+      # meta
+      - match: '\\m[a-g_0-9]'
+        scope: constant.language
+      # newline
+      - match: '\\n'
+        scope: constant.language
+      # path separator
+      - match: '\\\\'
+        scope: constant.other
+      # placeholders, format text %a 
+      - match: '%[A-Za-z_]'
+        scope: constant.other.placeholder
+      # placeholders, format text %%foo 
+      - match: '%%\s*(\w.*?\b)'
+        scope: constant.other.placeholder
+      # end string
+      - match: '"'
+        pop: true
+    - match: \'
+      push:
+      - meta_scope: string.quoted.single
+      # colors
+      - match: '\\c[a-g_0-9]'
+        scope: constant.language
+      # buttons
+      - match: '\\b[a-z_0-9]'
+        scope: constant.language
+      # meta
+      - match: '\\m[a-g_0-9]'
+        scope: constant.language
+      # newline
+      - match: '\\n'
+        scope: constant.language
+      # path separator
+      - match: '\\\\'
+        scope: constant.other
+      # placeholders, format text %a 
+      - match: '%[A-Za-z_]'
+        scope: constant.other.placeholder
+      # placeholders, format text %%foo 
+      - match: '%%\s*(\w.*?\b)'
+        scope: constant.other.placeholder
+      # end string
+      - match: \'
+        pop: true
+
+  # ---- comments prototype
+  comments:
+    # inline comments
+    - match: '///'
+      scope: punctuation.definition.comment
+      push:
+       - meta_scope: comment.block.documentation
+       # end line
+       - match: $\n?
+         pop: true
+    - match: '//'
+      scope: punctuation.definition.comment
+      push:
+       - meta_scope: comment.line
+       # comment prefixes 
+       - match: \b(WARNING\(|WARN\(|ERROR\(|BUG\(|BUGS\(|BUGGED\()\b
+         scope: invalid.illegal
+         push: comment_scope_red
+       # comment prefixes 
+       - match: \b(TODO\(|NOTE\(|NOTES\(|OPTI\(|OPT\(|OPTIMIZE\(|CLEANUP\()\b
+         scope: invalid.deprecated
+         push: comment_scope_green
+       # end line
+       - match: $\n?
+         pop: true
+    # inline comments
+    - match: ';'
+      scope: punctuation.definition.comment
+      push:
+       - meta_scope: comment.line
+       # end line
+       - match: $\n?
+         pop: true
+    # block comments
+    - match: '(?<!\/)/\*'
+      scope: punctuation.definition.comment
+      push:
+       - meta_scope: comment.block
+       - match: '\*/'
+         pop: true
+
+  # comment scope green
+  comment_scope_green:
+    - meta_scope: invalid.deprecated
+    - match: $\n?
+      pop: true
+    - match: '\:'
+      pop: true
+
+  # comment scope red
+  comment_scope_red:
+    - meta_scope: invalid.illegal
+    - match: $\n?
+      pop: true
+    - match: '\:'
+      pop: true
+  
+  # --- array scope
+  array:
+    - include: preprocessor
+    - include: comments
+    - include: types
+    - include: references
+    # separators
+    - match: ','
+      scope: punctuation.separator
+    # array
+    - match: '\]'
+      scope: keyword.declaration.struct
+      pop: true
+
+  # --- struct scope
+  struct:
+    - include: preprocessor
+    - include: comments
+    - include: types
+    - include: accessor
+    - include: references
+    - include: operator
+    # struct
+    - match: '}'
+      scope: keyword.declaration.class
+      pop: true
+
+  # --- group scope
+  group:
+    - include: types
+    - include: accessor
+    - include: references
+    - include: operator
+    # separator for vectors
+    - match: ','
+      scope: punctuation.separator
+    # group
+    - match: '\)'
+      scope: keyword.declaration.class
+      pop: true
+
+  # --- types prototypes
+  types:
+    - include: strings
+    # struct
+    - match: '{'
+      scope: keyword.declaration.class
+      push: struct
+    # group
+    - match: '\('
+      scope: keyword.declaration.struct
+      push: group
+    # array
+    - match: '\['
+      scope: keyword.declaration.struct
+      push: array
+    # assignment
+    - match: '='
+      scope: keyword.operator.assignment
+    # numbers
+    - match: \b[0-9]+\b
+      scope: constant.numeric
+    # hex numbers
+    - match: \b0x[A-Fa-f_0-9]+\b
+      scope: constant.numeric
+
+  # --- accessor prototypes
+  accessor:
+    # object accessor
+    - match: '\::'
+      scope: punctuation.accessor constant.language
+    - match: '\:'
+      scope: punctuation.accessor constant.language
+    # struct accessor
+    - match: '\.'
+      scope: punctuation.accessor constant.language
+
+  # --- operator prototypes
+  operator:
+    # operators
+    - match: '\||&'
+      scope: keyword.operator
+    # keyword.operator.word
+    - match: \b(OR|AND|NOT)\b
+      scope: keyword.operator.word
+    # operators
+    - match: '\+|\-|\*|\/|\<|\>'
+      scope: keyword.operator.arithmetic
+    # assignment
+    - match: '='
+      scope: keyword.operator.assignment
+
+  # --- control prototypes
+  control:
+    - include: operator
+    # control keywords
+    - match: \b(if|else|endif|for|while|repeat|return|break)\b
+      scope: keyword.control
+    # control keywords
+    - match: \b(switch|endswitch|case\s|default)\b
+      scope: keyword.control
+    # random / range keywords
+    - match: \b(Random|RandomRange|Random2|RandomRange2|RandomNorepeat|RandomPermute|RandomShuffle)\b
+      scope: constant.language
+  # script function scope
+  script:
+    # hmm
+    - include: preprocessor
+    - include: references
+    - include: control
+    - include: types
+    - include: accessor
+    # endscript keyword
+    - match: \b(endscript)\b
+      scope: keyword.declaration.function
+      pop: true
+    # markers
+    - match: '\:'
+      scope: markup.italic constant.language
+    # markers
+    - match: '\@'
+      scope: markup.italic constant.language
+
+  # --- reference prototypes
+  references:
+    # reference local <something>
+    - match: '<[A-Za-z_][A-Za-z_0-9]*>'
+      scope: markup.italic variable.language
+    # reference all args <...>
+    - match: '<\.\.\.>'
+      scope: markup.italic variable.language
+
+  # --- preprocessor prototypes
+  preprocessor:
+    # preprocessor
+    - match: '#'
+      scope: meta.preprocessor punctuation.definition.annotation
+      push:
+       - include: strings
+       # keywords
+       - match: \b(ifdef|ifndef|else|endif|define|include|goto|magic|fileid|raw)\b
+         scope: keyword.control markup.italic
+       - match: ' '
+         pop: true
+       - match: $\n?
+         pop: true
+
+  # --- main sope
+  main:
+    - include: preprocessor
+    # script name keyword
+    - match: '\bscript \s*(\w.*?\b)'
+      scope: keyword.declaration.function
+      push: script
+      captures:
+       1: entity.name.function
+    # endscript keyword
+    - match: \b(endscript)\b
+      scope: keyword.declaration.function
+    # variable
+    - match: '(\w.*?)\s*(?==)'
+      scope: variable.other.constant
+      captures:
+       1: entity.name.constant
