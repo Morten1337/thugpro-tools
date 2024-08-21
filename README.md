@@ -1,6 +1,8 @@
 # thugpro-tools
 
-New build tools for THUG Pro written in Python! The source code will be provided in another repository.
+New build tools for THUG Pro written in Python!  
+
+You can find the the source code here [@morten1337/thps-formats](https://github.com/Morten1337/thps-formats)
 
 ## tools
 - `qcompy` – script compiler
